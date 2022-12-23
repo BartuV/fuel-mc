@@ -1,0 +1,7 @@
+func tick(){
+    /summon sheep
+}
+
+func load(){
+    /say hello
+}
