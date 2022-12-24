@@ -6,24 +6,20 @@ class Token:
 
 
 class Lexer:
-    def __init__(self, input_string):
+    def __init__(self, input_string,enums):
         self.input = input_string.split()
         self.tokens = []
+        self.enums = enums
         
     def lex(self):
         for i in range(len(self.input)):
             cur = self.input[i]
-            print(cur)
-            # if cur == "func":
-            #     self.tokens.append(Token(cur, "FUNCTION",i))
-
-            # else:
-            #     self.tokens.append(Token(cur, "IDENTIFIER", i))
-            # for key in self.token_list.keys():
-            #     if cur == key:
-            #         self.add_token(Token(i, self.token_list[i], 1))
-            #     else:
-            #         self.add_token(Token(i, "IDENTIFIER", 1))
+            
+            if cur in self.enums:
+                print(f"{self.enums[cur].getValue()}: {cur}")
+                self.tokens.append(Token(cur,self.enums[cur].getValue() ,i))
+            else:
+                self.tokens.append(Token(cur, "IDENTIFIER",i))
                     
     def add_token(self,token):
         self.tokens.append(token)

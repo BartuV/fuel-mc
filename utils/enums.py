@@ -20,7 +20,7 @@ class EnumList:
         
         for i in args:
             if type(i) == set:
-                en = Enum(list(i)[0])
+                en = Enum(list(i)[0],0)
                 key = list(i)[0]
                 cls.tokens.update({key:en})
             elif type(i) == dict:

@@ -31,7 +31,7 @@ a = EnumList(
 def compile(file_path):
     file = File(file_path)
     content = file.read()
-    lexer = Lexer(content)
+    lexer = Lexer(content,a)
     lexer.lex()
     
 def main():
@@ -52,13 +52,13 @@ def main():
                 version = args[2]
                 pack_description = args[3].replace(r'"', "")
                 filepath = args[4].replace(r'"', "")
+            
+                if filepath.exists():
+                    datapack = DataPack(pack_name, version, pack_description, filepath)
+                    globals()["datapack"] = datapack
+                    datapack.edit_jsons()
         elif args[1] == "compile":
             compile(args[2])
-        
-    if filepath.exists():
-        datapack = DataPack(pack_name, version, pack_description, filepath)
-        globals()["datapack"] = datapack
-        datapack.edit_jsons()
 
 if __name__ == "__main__":
     main()
