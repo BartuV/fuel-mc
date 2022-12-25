@@ -10,23 +10,21 @@ from utils.logger import *
 args = sys.argv
 
 regex_enums = EnumList(
-    {r'\n+':"NEWLINE"},
-    {r"[\()]":"BRAKETS"},
-    {r'^\s*$(^(\r\n|\n|\r)$)|(^(\r\n|\n|\r))|^\s*$/gm':"WHITE_SPACE"},
-    {r'("(.*?)")':"STRING"},
-    {r'(\((.*?)\))':"VARIABLE"},
-    {r'func(.*?\n)*?\bend':"FUNCTION"},
-    {r'if (.*?) then(.*?\n)*?\bend':"IF"},
-    {r'while (.*?) do(.*?\n)*?\bend':"WHILE"},
-    {r'for (.*?) do(.*?\n)*?\bend':"WHILE"},
-    {r'var (.*?)=(.*|\n)':"VARIABLE"},
-    {r'^(.*?[0-9]+)\+([0-9]+).*?':"PLUS_OPERATOR"},
-    {r'^(.*?[0-9]+)\/([0-9]+).*?':"DIVIDE_OPERATOR"},
-    {r'^(.*?[0-9]+)\*([0-9]+).*?':"MULTI_OPERATOR"},
-    {r'^(.*?[0-9]+)\-([0-9]+).*?':"MINUS_OPERATOR"},
-    {r"[0-9]+":"NUMBER"},
-    {r'(\band)':"AND"},
-    {r'(\bbreak)':"BREAK"}
+    {r'\n+':"NEWLINE"},                                         # group 0: newline
+    {r'^($\n)':"WHITE_SPACE"},                                  # group 0: white_space
+    {r'("(.*?)")':"STRING"},                                    # group 0: strings
+    {r'^\b((func.*? ).*?(\(.*\)))(.*?\n)*?\b(end)':"FUNCTION"}, # group 0: function, group 1: function header, group 2: func, group 3: function arguments, group 4: function insides, group 5: end
+    {r'if (.*?) then(.*?\n)*?\bend':"IF"},                      # group 0: if, group 1: condition, group 2: if insides
+    {r'while (.*?) do(.*?\n)*?\bend':"WHILE"},                  # group 0: while, group 1: condition, group 2: while insides
+    {r'for (.*?) do(.*?\n)*?\bend':"FOR"},                      # group 0: for, group 1: condition, group 2: for insides
+    {r'var (.*?)=(.*|\n)':"VARIABLE"},                          # group 0: var, group 1: name, group 2: value
+    {r'^(.*?[0-9]+)\+([0-9]+).*?':"PLUS_OPERATOR"},             # group 0: expresion, group 1: first number, group 2: second number
+    {r'^(.*?[0-9]+)\/([0-9]+).*?':"DIVIDE_OPERATOR"},           # group 0: expresion, group 1: first number, group 2: second number
+    {r'^(.*?[0-9]+)\*([0-9]+).*?':"MULTI_OPERATOR"},            # group 0: expresion, group 1: first number, group 2: second number
+    {r'^(.*?[0-9]+)\-([0-9]+).*?':"MINUS_OPERATOR"},            # group 0: expresion, group 1: first number, group 2: second number
+    {r"[0-9]+":"NUMBER"},                                       # group 0: numbers
+    {r'(\band)':"AND"},                                         # group 0: and
+    {r'(\bbreak)':"BREAK"}                                      # group 0: break
 )
 
 def compile(file_path):
