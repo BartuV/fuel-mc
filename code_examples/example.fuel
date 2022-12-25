@@ -1,7 +1,7 @@
-func tick(){
+func tick()
     /summon sheep
-}
+end
 
-func load(){
+func load()
     /say hello
-}
+end

@@ -1,6 +1,7 @@
 from colorama import *
 from pathlib import *
 import sys
+import re as regex
 from utils.lexer_parser import *
 from utils.file_sytem_stuff import *
 from utils.enums import *
@@ -8,31 +9,30 @@ from utils.logger import *
 
 args = sys.argv
 
-a = EnumList(
-    {"func":"FUNCTION"},
-    {"while":"WHILE"},
-    {"loop":"LOOP"},
-    {"break":"LOOP_BREAKER"},
-    {r"\n":"NEWLINE"},
-    {"if":"IF"},
-    {"=":"EQUALS_OPERATOR"},
-    {"*":"MULTI_OPERATOR"},
-    {"-":"MINUS_OPERATOR"},
-    {"+":"PLUS_OPERATOR"},
-    {"for":"FOR_LOOP"},
-    {"end":"END"},
-    {"and":"IF_AND"},
-    {"do":"LOOP_STARTER"},
-    {"then":"IF_STARTER"},
-    {"const":"CONSTANT_VARIABLE"},
-    {"var":"VARIABLE_STARTER"}
+regex_enums = EnumList(
+    {r'\n+':"NEWLINE"},
+    {r"[\()]":"BRAKETS"},
+    {r'^\s*$(^(\r\n|\n|\r)$)|(^(\r\n|\n|\r))|^\s*$/gm':"WHITE_SPACE"},
+    {r'("(.*?)")':"STRING"},
+    {r'(\((.*?)\))':"VARIABLE"},
+    {r'func(.*?\n)*?\bend':"FUNCTION"},
+    {r'if (.*?) then(.*?\n)*?\bend':"IF"},
+    {r'while (.*?) do(.*?\n)*?\bend':"WHILE"},
+    {r'for (.*?) do(.*?\n)*?\bend':"WHILE"},
+    {r'var (.*?)=(.*|\n)':"VARIABLE"},
+    {r'^(.*?[0-9]+)\+([0-9]+).*?':"PLUS_OPERATOR"},
+    {r'^(.*?[0-9]+)\/([0-9]+).*?':"DIVIDE_OPERATOR"},
+    {r'^(.*?[0-9]+)\*([0-9]+).*?':"MULTI_OPERATOR"},
+    {r'^(.*?[0-9]+)\-([0-9]+).*?':"MINUS_OPERATOR"},
+    {r"[0-9]+":"NUMBER"},
+    {r'(\band)':"AND"},
+    {r'(\bbreak)':"BREAK"}
 )
 
 def compile(file_path):
     file = File(file_path)
     content = file.read()
-    lexer = Lexer(content,a)
-    lexer.lex()
+    Compiler(regex_enums,content)
     
 def main():
     filepath = Path()
@@ -58,7 +58,10 @@ def main():
                     globals()["datapack"] = datapack
                     datapack.edit_jsons()
         elif args[1] == "compile":
-            compile(args[2])
+            if args[2] is not None:
+                compile(Path(args[2]))
+            else:
+                compile(Path(input(f"{Style.BRIGHT}{Fore.LIGHTGREEN_EX}Enter the pack name> {Style.RESET_ALL}")))
 
 if __name__ == "__main__":
     main()
